@@ -126,7 +126,7 @@ eval("module.exports = function(module) {\n\tif (!module.webpackPolyfill) {\n\t\
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"archive\", function() { return archive; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"unarchive\", function() { return unarchive; });\nvar bigInt = __webpack_require__(/*! big-integer */ \"./node_modules/big-integer/BigInteger.js\");\n\nvar number = 42;\n\nvar _int = bigInt(number);\n\nconsole.log(_int);\nvar archive = function archive() {};\nvar unarchive = function unarchive() {};\n\n//# sourceURL=webpack://Lursa/./source/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"archive\", function() { return archive; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"unarchive\", function() { return unarchive; });\nvar bigInt = __webpack_require__(/*! big-integer */ \"./node_modules/big-integer/BigInteger.js\");\n\nvar number = 42;\n\nvar _int = bigInt(number);\n\nconsole.log(_int);\nvar archive = function archive() {\n  console.warn(\"lursa is still under development\");\n};\nvar unarchive = function unarchive() {\n  console.warn(\"lursa is still under development\");\n};\n\n//# sourceURL=webpack://Lursa/./source/index.js?");
 
 /***/ })
 
