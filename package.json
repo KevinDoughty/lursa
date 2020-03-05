@@ -2,7 +2,8 @@
   "name": "lursa",
   "version": "0.0.1",
   "description": "The only URL state hashing package sanctioned by Lursa and B'Etor of the House of Duras",
-  "main": "index.js",
+  "main": "dist/lursa.js",
+  "module": "module/lursa.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
