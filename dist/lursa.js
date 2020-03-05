@@ -122,11 +122,11 @@ eval("module.exports = function(module) {\n\tif (!module.webpackPolyfill) {\n\t\
 /*!*************************!*\
   !*** ./source/index.js ***!
   \*************************/
-/*! no exports provided */
+/*! exports provided: archive, unarchive */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var big_integer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! big-integer */ \"./node_modules/big-integer/BigInteger.js\");\n/* harmony import */ var big_integer__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(big_integer__WEBPACK_IMPORTED_MODULE_0__);\n\n\n//# sourceURL=webpack://Lursa/./source/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"archive\", function() { return archive; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"unarchive\", function() { return unarchive; });\nvar bigInt = __webpack_require__(/*! big-integer */ \"./node_modules/big-integer/BigInteger.js\");\n\nvar number = 42;\n\nvar _int = bigInt(number);\n\nconsole.log(_int);\nvar archive = function archive() {};\nvar unarchive = function unarchive() {};\n\n//# sourceURL=webpack://Lursa/./source/index.js?");
 
 /***/ })
 

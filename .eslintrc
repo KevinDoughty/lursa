@@ -6,6 +6,7 @@
 		"window": true,
 		"setTimeout": true,
 		"console": true,
+        "require": true,
 	},
 	"rules": {
 		"indent": ["error", "tab", { "SwitchCase": 1 }],
