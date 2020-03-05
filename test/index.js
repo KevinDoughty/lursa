@@ -13,7 +13,7 @@ describe("LURSA", function() {
 			assert(!isFunction({}));
 			assert(!isFunction("[object Function]"));
 		});
-		it("bitInt", function() {
+		it("bigInt", function() {
 			assert(isFunction(bigInt));
 		}),
 		it("API", function() {
