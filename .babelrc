@@ -2,17 +2,17 @@
 	"env": {
 		"webpack": {
 			"presets": [
-				[ "env", { "modules" : false } ]
+				[ "@babel/preset-env", { "modules" : false } ]
 			]
 		},
 		"rollup": {
 			"presets": [
-				[ "env", { "modules" : false } ]
+				[ "@babel/preset-env", { "modules" : false } ]
 			]
 		},
 		"mocha" : {
 			"presets": [
-				[ "env" ]
+				["@babel/preset-env"]
 			]
 		}
 	}
