@@ -1,0 +1,24 @@
+{
+  "name": "lursa",
+  "version": "0.0.1",
+  "description": "The only URL state hashing package sanctioned by Lursa and B'Etor of the House of Duras",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KevinDoughty/lursa.git"
+  },
+  "keywords": [
+    "URL",
+    "state",
+    "hashing"
+  ],
+  "author": "Kevin Doughty",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/KevinDoughty/lursa/issues"
+  },
+  "homepage": "https://github.com/KevinDoughty/lursa#readme"
+}
