@@ -1,0 +1,19 @@
+{
+	"env": {
+		"webpack": {
+			"presets": [
+				[ "env", { "modules" : false } ]
+			]
+		},
+		"rollup": {
+			"presets": [
+				[ "env", { "modules" : false } ]
+			]
+		},
+		"mocha" : {
+			"presets": [
+				[ "env" ]
+			]
+		}
+	}
+}
