@@ -1,6 +1,6 @@
 "use strict";
 
-import * as lursa from "../source/index.js";
+import lursa from "../source/index.js";
 const bigInt = require("big-integer");
 const assert = require("assert");
 const beforeEach = require("mocha").beforeEach;
@@ -23,10 +23,8 @@ describe("LURSA", function() {
 			assert(isFunction(bigInt));
 		}),
 		it("API", function() {
-			assert(isFunction(lursa.archive));
-			assert(isFunction(lursa.unarchive));
-			const schema = [{}];
-			const { archive, unarchive } = lursa.lursa(schema);
+			assert(isFunction(lursa));
+			const { archive, unarchive } = lursa([]);
 			assert(isFunction(archive));
 			assert(isFunction(unarchive));
 		});
@@ -44,31 +42,17 @@ describe("LURSA", function() {
 				b:1
 			};
 		});
-		describe("default", function() {
-			it("curried", function() {
-				const { archive, unarchive } = lursa.lursa(schema);
-				const archived = archive({});
-				const unarchived = unarchive(archived);
-				assert.deepEqual(expected, unarchived);
-			});
-			it("argument", function() { // maybe individual functions should not be exposed
-				const archived = lursa.archive({},schema);
-				const unarchived = lursa.unarchive(archived,schema);
-				assert.deepEqual(expected, unarchived);
-			});
+		it("default", function() {
+			const { archive, unarchive } = lursa(schema);
+			const archived = archive({});
+			const unarchived = unarchive(archived);
+			assert.deepEqual(expected, unarchived);
 		});
-		describe("setting", function() {
-			it("curried", function() {
-				const { archive, unarchive } = lursa.lursa(schema);
-				const archived = archive(expected);
-				const unarchived = unarchive(archived);
-				assert.deepEqual(expected, unarchived);
-			});
-			it("argument", function() { // maybe individual functions should not be exposed
-				const archived = lursa.archive(expected,schema);
-				const unarchived = lursa.unarchive(archived,schema);
-				assert.deepEqual(expected, unarchived);
-			});
+		it("manual", function() {
+			const { archive, unarchive } = lursa(schema);
+			const archived = archive(expected);
+			const unarchived = unarchive(archived);
+			assert.deepEqual(expected, unarchived);
 		});
 	});
 
@@ -136,33 +120,18 @@ describe("LURSA", function() {
 				bb:0
 			};
 		});
-		describe("default", function() {
-			it("curried", function() {
-				const { archive, unarchive } = lursa.lursa(schema);
-				const archived = archive({});
-				const unarchived = unarchive(archived);
-				assert.deepEqual(unarchived,expected);
-			});
-			it("argument", function() { // maybe individual functions should not be exposed
-				const archived = lursa.archive({},schema);
-				const unarchived = lursa.unarchive(archived,schema);
-				assert.deepEqual(unarchived,expected);
-			});
+		it("default", function() {
+			const { archive, unarchive } = lursa(schema);
+			const archived = archive({});
+			const unarchived = unarchive(archived);
+			assert.deepEqual(unarchived,expected);
 		});
-		describe("setting", function() {
-			it("curried", function() {
-				const { archive, unarchive } = lursa.lursa(schema);
-				const archived = archive(expected);
-				const unarchived = unarchive(archived);
-				assert.deepEqual(unarchived,expected);
-			});
-			it("argument", function() { // maybe individual functions should not be exposed
-				const archived = lursa.archive(expected,schema);
-				const unarchived = lursa.unarchive(archived,schema);
-				assert.deepEqual(unarchived,expected);
-			});
+		it("manual", function() {
+			const { archive, unarchive } = lursa(schema);
+			const archived = archive(expected);
+			const unarchived = unarchive(archived);
+			assert.deepEqual(unarchived,expected);
 		});
-
 	});
 
 	describe("enum", function() {
@@ -180,7 +149,7 @@ describe("LURSA", function() {
 			};
 		});
 		it("works", function() {
-			const { archive, unarchive } = lursa.lursa(schema);
+			const { archive, unarchive } = lursa(schema);
 			const archived = archive({});
 			const unarchived = unarchive(archived);
 			assert.deepEqual(unarchived,expected);
@@ -214,13 +183,13 @@ describe("LURSA", function() {
 			};
 		});
 		it("default", function() {
-			const { archive, unarchive } = lursa.lursa(schema);
+			const { archive, unarchive } = lursa(schema);
 			const archived = archive({});
 			const unarchived = unarchive(archived);
 			assert.deepEqual(unarchived,expected);
 		});
-		it("setting", function() {
-			const { archive, unarchive } = lursa.lursa(schema);
+		it("manual", function() {
+			const { archive, unarchive } = lursa(schema);
 			const archived = archive(expected);
 			const unarchived = unarchive(archived);
 			assert.deepEqual(unarchived,expected);
@@ -255,13 +224,13 @@ describe("LURSA", function() {
 			};
 		});
 		it("default", function() {
-			const { archive, unarchive } = lursa.lursa(schema);
+			const { archive, unarchive } = lursa(schema);
 			const archived = archive({});
 			const unarchived = unarchive(archived);
 			assert.deepEqual(unarchived,expected);
 		});
 		it("setting", function() {
-			const { archive, unarchive } = lursa.lursa(schema);
+			const { archive, unarchive } = lursa(schema);
 			const archived = archive(expected);
 			const unarchived = unarchive(archived);
 			assert.deepEqual(unarchived,expected);

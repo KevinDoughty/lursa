@@ -3,12 +3,13 @@ const bigInt = require("big-integer");
 const alphabet = "23456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"; // no 1,0,l,I,O // 5,S and 8,B are ok
 const base = alphabet.length; // 57
 
-export const lursa = function(schema) {
+const lursa = function(schema) {
 	return {
 		archive: settings => archive(settings,schema),
 		unarchive: settings => unarchive(settings,schema)
 	};
 };
+export default lursa;
 
 function no(value) {
 	return typeof value === "undefined";
@@ -195,7 +196,7 @@ function toPrettyValue(value,item) {
 	return value;
 }
 
-const convert = function(settings, schema, processed) {
+function convert(settings, schema, processed) {
 	const result = {};
 	Object.keys(settings).forEach( function(key) {
 		let value = settings[key];
@@ -206,9 +207,9 @@ const convert = function(settings, schema, processed) {
 		result[key] = value;
 	});
 	return result;
-};
+}
 
-const unconvert = function(settings, schema, processed) {
+function unconvert(settings, schema, processed) {
 	const result = {};
 	Object.keys(settings).forEach( function(key) {
 		let value = settings[key];
@@ -219,9 +220,9 @@ const unconvert = function(settings, schema, processed) {
 		result[key] = value;
 	});
 	return result;
-};
+}
 
-export const archive = function(settings, schema) {
+function archive(settings, schema) {
 	if (no(schema)) throw new Error("no schema to use for archiving");
 	const processed = process(schema);
 	settings = convert(settings,schema,processed);
@@ -238,7 +239,7 @@ export const archive = function(settings, schema) {
 		number = bigInt(number.divide(base));
 	}
 	return string;
-};
+}
 
 function archiveItems(item,processed,current,number) {
 	let choices;
@@ -288,7 +289,7 @@ function archiveItems(item,processed,current,number) {
 	return { current, number };
 }
 
-export const unarchive = function(string, schema) { // unconvert url query string to object literal
+function unarchive(string, schema) { // unconvert url query string to object literal
 	if (no(schema)) throw new Error("no schema to use for unarchiving");
 	const processed = process(schema);
 	if (no(string) || string === null) string = "";
@@ -301,7 +302,7 @@ export const unarchive = function(string, schema) { // unconvert url query strin
 	unarchiveItems(processed, schema, ugly, 0, length ? number : undefined); // last argument optional for special handling of zero length string
 	const pretty = unconvert(ugly,schema,processed);
 	return pretty;
-};
+}
 
 function unarchiveItems(processed, item, result, current, number) {  // last argument optional for special handling of zero length string
 	let children = [];

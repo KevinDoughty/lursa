@@ -238,7 +238,7 @@ function toPrettyValue(value, item) {
   return value;
 }
 
-var convert = function convert(settings, schema, processed) {
+function convert(settings, schema, processed) {
   var result = {};
   Object.keys(settings).forEach(function (key) {
     var value = settings[key];
@@ -251,9 +251,9 @@ var convert = function convert(settings, schema, processed) {
     result[key] = value;
   });
   return result;
-};
+}
 
-var unconvert = function unconvert(settings, schema, processed) {
+function unconvert(settings, schema, processed) {
   var result = {};
   Object.keys(settings).forEach(function (key) {
     var value = settings[key];
@@ -266,9 +266,9 @@ var unconvert = function unconvert(settings, schema, processed) {
     result[key] = value;
   });
   return result;
-};
+}
 
-var _archive = function _archive(settings, schema) {
+function _archive(settings, schema) {
   if (no(schema)) throw new Error("no schema to use for archiving");
   var processed = process(schema);
   settings = convert(settings, schema, processed);
@@ -288,7 +288,7 @@ var _archive = function _archive(settings, schema) {
   }
 
   return string;
-};
+}
 
 function archiveItems(item, processed, current, number) {
   var choices;
@@ -367,7 +367,7 @@ function archiveItems(item, processed, current, number) {
   };
 }
 
-var _unarchive = function _unarchive(string, schema) {
+function _unarchive(string, schema) {
   // unconvert url query string to object literal
   if (no(schema)) throw new Error("no schema to use for unarchiving");
   var processed = process(schema);
@@ -384,7 +384,7 @@ var _unarchive = function _unarchive(string, schema) {
 
   var pretty = unconvert(ugly, schema, processed);
   return pretty;
-};
+}
 
 function unarchiveItems(processed, item, result, current, number) {
   // last argument optional for special handling of zero length string
@@ -416,4 +416,4 @@ function unarchiveItems(processed, item, result, current, number) {
   return current;
 }
 
-export { _archive as archive, lursa, _unarchive as unarchive };
+export default lursa;
