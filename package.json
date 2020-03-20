@@ -1,6 +1,6 @@
 {
   "name": "lursa",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "The only URL state hashing package sanctioned by Lursa and B'Etor of the House of Duras",
   "main": "dist/lursa.js",
   "module": "module/lursa.js",
@@ -26,8 +26,7 @@
   },
   "homepage": "https://github.com/KevinDoughty/lursa#readme",
   "dependencies": {
-    "big-integer": "^1.6.48",
-    "history": "^4.10.1"
+    "big-integer": "^1.6.48"
   },
   "devDependencies": {
     "@babel/core": "^7.8.7",
