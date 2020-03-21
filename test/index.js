@@ -207,20 +207,24 @@ describe("LURSA", function() {
 						{ id:"c", type:"bool", default:false },
 						{ id:"d", type:"bool", default:true }
 					],
-					{ id:"two", type:"group", default:[
+					{ id:"two", type:"group", values:[
 						{ id:"e", type:"bool", default:false },
 						{ id:"f", type:"bool", default:true }
 					] }
 
 				] },
-				{ id:"g", type:"bool", default:true }
+				{ id:"g", type:"bool", default:true },
+				{ id:"h", type:"bool", default:true },
+				{ id:"i", type:"int", size:3, default:1 }
 			];
 			expected = { // Unselected items are hidden. It should probably parse everything even if not chosen. Maybe this way won't overwrite user settings and will preserve values when unchosen then re-chosen
 				a: true,
 				one: 2,
 				e: false,
 				f: true,
-				g: true
+				g: true,
+				h: true,
+				i: 1
 			};
 		});
 		it("default", function() {

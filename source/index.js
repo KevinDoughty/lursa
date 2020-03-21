@@ -27,9 +27,8 @@ function specifiedUglyValue(item) {
 	return toUglyValue(value,item);
 }
 
-function choicesForItem(item,isEnum) {
+function choicesForItem(item) {
 	let choices = item.choices;
-	if (!isEnum && no(choices)) choices = item.default;
 	if (no(choices)) choices = item.values;
 	if (no(choices)) choices = [];
 	return choices;
@@ -40,7 +39,7 @@ function sizeOfItem(item) {
 	if (type === "bool") return 1;
 	if (type === "group") return 0;
 	if (type === "enum" || type === "chooser") {
-		const values = choicesForItem(item, true);
+		const values = choicesForItem(item);
 		if (no(values)) return 0;
 		const span = values.length;
 		let size = 0;
@@ -89,7 +88,7 @@ function processPreset(preset,result) {
 	} else {
 		const key = preset.id;
 		if (preset.type === "group" || preset.type === "chooser") {
-			const choices = choicesForItem(preset, preset.type === "chooser");
+			const choices = choicesForItem(preset);
 			result[key] = Object.assign({
 				value: preset.default
 			}, preset);
@@ -108,7 +107,7 @@ function toUglyValue(value,item) { // sanitizes via wrap and clamp
 	if (no(value)) return 0;
 	const type = item.type;
 	if (type === "bool") return value ? 1 : 0;
-	else if (type === "enum") return specifiedPrettyValue(item); // pretty needed, don't want to become re-entrant
+	else if (type === "enum" || type === "chooser") return specifiedPrettyValue(item); // pretty needed, don't want to become re-entrant
 	else {
 		const min = item.min;
 		const max = item.max;
@@ -196,27 +195,24 @@ function toPrettyValue(value,item) {
 	return value;
 }
 
-function convert(settings, schema, processed) {
+function convert(settings, processed) {
 	const result = {};
-	Object.keys(settings).forEach( function(key) {
+	Object.keys(processed).forEach( function(key) {
 		let value = settings[key];
 		const item = processed[key];
-		if (yes(item)) {
-			value = toUglyValue(value,item);
-		}
+		if (no(value)) value = specifiedPrettyValue(item);
+		value = toUglyValue(value,item);
 		result[key] = value;
 	});
 	return result;
 }
 
-function unconvert(settings, schema, processed) {
+function unconvert(settings, processed) {
 	const result = {};
 	Object.keys(settings).forEach( function(key) {
 		let value = settings[key];
 		const item = processed[key];
-		if (yes(item)) {
-			value = toPrettyValue(value,item);
-		}
+		value = toPrettyValue(value,item);
 		result[key] = value;
 	});
 	return result;
@@ -225,12 +221,9 @@ function unconvert(settings, schema, processed) {
 function archive(settings, schema) {
 	if (no(schema)) throw new Error("no schema to use for archiving");
 	const processed = process(schema);
-	settings = convert(settings,schema,processed);
+	settings = convert(settings,processed);
 	if (no(settings) || settings === null) settings = {};
-	Object.keys(settings).forEach( function(key) {
-		if (processed[key]) processed[key].value = settings[key];
-	});
-	const archived = archiveItems(schema, processed, 0, bigInt());
+	const archived = archiveItems(schema, settings, processed, 0, bigInt());
 	let number = archived.number;
 	let string = "";
 	while (number.greater(0)) {
@@ -241,21 +234,19 @@ function archive(settings, schema) {
 	return string;
 }
 
-function archiveItems(item,processed,current,number) {
-	let choices;
+function archiveItems(item,converted,processed,current,number) {
+	let choices = [];
 	if (Array.isArray(item)) {
 		choices = item;
 	} else {
-		choices = choicesForItem(item);
-		let value = specifiedPrettyValue(item);
-		if (item.type === "chooser") {
-			value = choices.indexOf(value);
-			if (value < 0) value = 0;
-		}
+		const type = item.type;
+		let value = converted[item.id];
+		if (type === "group") choices = choicesForItem(item);
+		if (type === "chooser") choices = [choicesForItem(item)[value]];
 		let size = sizeOfItem(item);
 		if (size) {
 			const length = Math.pow(2,size)-1;
-			if (item.type === "bool") {
+			if (type === "bool") {
 				while (value < 0) value += 2;
 				while (value > 1) value -= 2;
 			} else if (item.type === "int") {
@@ -266,7 +257,7 @@ function archiveItems(item,processed,current,number) {
 					if (value < 0) value = 0;
 					if (value > length) value = length; // if not wrap, max is inclusive!
 				}
-			} else if (item.type === "float") {
+			} else if (type === "float") {
 				if (item.wrap) {
 					while (value < 0) value += length;
 					while (value >= length) value -= length; // if wrap, max is exclusive!
@@ -282,7 +273,7 @@ function archiveItems(item,processed,current,number) {
 		}
 	}
 	choices.forEach( item => {
-		const archived = archiveItems(item.id,processed,current,number);
+		const archived = archiveItems(item,converted,processed,current,number);
 		number = archived.number;
 		current = archived.current;
 	});
@@ -300,7 +291,7 @@ function unarchive(string, schema) { // unconvert url query string to object lit
 	}
 	const ugly = {};
 	unarchiveItems(processed, schema, ugly, 0, length ? number : undefined); // last argument optional for special handling of zero length string
-	const pretty = unconvert(ugly,schema,processed);
+	const pretty = unconvert(ugly,processed);
 	return pretty;
 }
 
@@ -317,7 +308,7 @@ function unarchiveItems(processed, item, result, current, number) {  // last arg
 			current += size;
 			if (item.type === "chooser") {
 				result[item.id] = value;
-				const choices = choicesForItem(item,true);
+				const choices = choicesForItem(item);
 				if (value >= 0 && value < choices.length) {
 					const child = choices[value]; // object in array at index
 					children.push(child); // othe items are hidden

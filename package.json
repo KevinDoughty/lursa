@@ -1,6 +1,6 @@
 {
   "name": "lursa",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The only URL state hashing package sanctioned by Lursa and B'Etor of the House of Duras",
   "main": "dist/lursa.js",
   "module": "module/lursa.js",
