@@ -233,7 +233,7 @@ describe("LURSA", function() {
 			const unarchived = unarchive(archived);
 			assert.deepEqual(unarchived,expected);
 		});
-		it("setting", function() {
+		it("manual", function() {
 			const { archive, unarchive } = lursa(schema);
 			const archived = archive(expected);
 			const unarchived = unarchive(archived);
