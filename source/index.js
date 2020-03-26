@@ -307,15 +307,14 @@ function unarchiveItems(processed, item, result, current, number) {  // last arg
 				: bigInt(number).shiftRight(current).and(Math.pow(2,size)-1).toJSNumber();
 			current += size;
 			if (item.type === "chooser") {
-				result[item.id] = value;
 				const choices = choicesForItem(item);
 				if (value >= 0 && value < choices.length) {
 					const child = choices[value]; // object in array at index
 					children.push(child); // othe items are hidden
 				}
-			} else {
-				result[item.id] = value;
 			}
+			result[item.id] = value;
+
 		}
 	}
 	children.forEach( child => {
