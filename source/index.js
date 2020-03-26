@@ -11,6 +11,10 @@ const lursa = function(schema) {
 };
 export default lursa;
 
+function isFunction(w) {
+	return w && {}.toString.call(w) === "[object Function]";
+}
+
 function no(value) {
 	return typeof value === "undefined";
 }
@@ -245,6 +249,8 @@ function archiveItems(item,converted,processed,current,number) {
 		if (type === "chooser") choices = [choicesForItem(item)[value]];
 		let size = sizeOfItem(item);
 		if (size) {
+			value = (isFunction(item.archive)) ? item.archive.call(item,value) : value;
+
 			const length = Math.pow(2,size)-1;
 			if (type === "bool") {
 				while (value < 0) value += 2;
@@ -313,7 +319,7 @@ function unarchiveItems(processed, item, result, current, number) {  // last arg
 					children.push(child); // othe items are hidden
 				}
 			}
-			result[item.id] = value;
+			result[item.id] = (isFunction(item.unarchive)) ? item.unarchive.call(item,value) : value;
 
 		}
 	}

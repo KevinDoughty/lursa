@@ -246,19 +246,19 @@ describe("LURSA", function() {
 		beforeEach( function() {
 			archiver = value => {
 				archiverCalled = true;
-				return Math.log(2,value);
+				return value/2;
 			};
 			unarchiver = value => {
 				unarchiverCalled = true;
-				return Math.pow(2,value);
+				return value*2;
 			};
 
 			schema = [
-				{ id: "a", type: "int", default:5, size: 3, archive:archiver, unarchive:unarchiver },
+				{ id: "a", type: "int", default:6, size: 3, archive:archiver, unarchive:unarchiver },
 				{ id: "b", type: "int", min:1, size: 3 }
 			];
 			expected = {
-				a:5,
+				a:6,
 				b:1
 			};
 		});
