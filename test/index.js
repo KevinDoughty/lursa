@@ -240,4 +240,43 @@ describe("LURSA", function() {
 			assert.deepEqual(unarchived,expected);
 		});
 	});
+
+	describe("delegate", function() {
+		let schema, expected, archiver, unarchiver, archiverCalled, unarchiverCalled;
+		beforeEach( function() {
+			archiver = value => {
+				archiverCalled = true;
+				return Math.log(2,value);
+			};
+			unarchiver = value => {
+				unarchiverCalled = true;
+				return Math.pow(2,value);
+			};
+
+			schema = [
+				{ id: "a", type: "int", default:5, size: 3, archive:archiver, unarchive:unarchiver },
+				{ id: "b", type: "int", min:1, size: 3 }
+			];
+			expected = {
+				a:5,
+				b:1
+			};
+		});
+		it("default", function() {
+			const { archive, unarchive } = lursa(schema);
+			const archived = archive({});
+			const unarchived = unarchive(archived);
+			assert.equal(archiverCalled,true);
+			assert.equal(unarchiverCalled,true);
+			assert.deepEqual(expected, unarchived);
+		});
+		it("manual", function() {
+			const { archive, unarchive } = lursa(schema);
+			const archived = archive(expected);
+			const unarchived = unarchive(archived);
+			assert.equal(archiverCalled,true);
+			assert.equal(unarchiverCalled,true);
+			assert.deepEqual(expected, unarchived);
+		});
+	});
 });
