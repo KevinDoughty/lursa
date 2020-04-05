@@ -35,11 +35,13 @@ describe("LURSA", function() {
 		beforeEach( function() {
 			schema = [
 				{ id: "a", type: "int", size: 3 },
-				{ id: "b", type: "int", min:1, size: 3 }
+				{ id: "b", type: "int", min:1, size: 3 },
+				{ id: "c", type: "int",  default: 3, size:2, wrap:true }
 			];
 			expected = {
 				a:0,
-				b:1
+				b:1,
+				c:3
 			};
 		});
 		it("default", function() {
