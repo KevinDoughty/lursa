@@ -227,7 +227,7 @@ function archive(settings, schema) {
 	const processed = process(schema);
 	settings = convert(settings,processed);
 	if (no(settings) || settings === null) settings = {};
-	const archived = archiveItems(schema, settings, processed, 0, bigInt());
+	const archived = archiveItems(schema, settings, 0, bigInt());
 	let number = archived.number;
 	let string = "";
 	while (number.greater(0)) {
@@ -238,7 +238,7 @@ function archive(settings, schema) {
 	return string;
 }
 
-function archiveItems(item,converted,processed,current,number) {
+function archiveItems(item,converted,current,number) {
 	let choices = [];
 	if (Array.isArray(item)) {
 		choices = item;
@@ -279,7 +279,7 @@ function archiveItems(item,converted,processed,current,number) {
 		}
 	}
 	choices.forEach( item => {
-		const archived = archiveItems(item,converted,processed,current,number);
+		const archived = archiveItems(item,converted,current,number);
 		number = archived.number;
 		current = archived.current;
 	});
@@ -296,12 +296,12 @@ function unarchive(string, schema) { // unconvert url query string to object lit
 		number = bigInt(number.times(base).plus(alphabet.indexOf(string.charAt(i))));
 	}
 	const ugly = {};
-	unarchiveItems(processed, schema, ugly, 0, length ? number : undefined); // last argument optional for special handling of zero length string
+	unarchiveItems(schema, ugly, 0, length ? number : undefined); // last argument optional for special handling of zero length string
 	const pretty = unconvert(ugly,processed);
 	return pretty;
 }
 
-function unarchiveItems(processed, item, result, current, number) {  // last argument optional for special handling of zero length string
+function unarchiveItems(item, result, current, number) {  // last argument optional for special handling of zero length string
 	let children = [];
 	if (Array.isArray(item)) children = item;
 	else if (item.type === "group") children = choicesForItem(item);
@@ -324,7 +324,7 @@ function unarchiveItems(processed, item, result, current, number) {  // last arg
 		}
 	}
 	children.forEach( child => {
-		current = unarchiveItems(processed, child, result, current, number);
+		current = unarchiveItems(child, result, current, number);
 	});
 	return current;
 }

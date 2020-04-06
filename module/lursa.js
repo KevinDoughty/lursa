@@ -15,6 +15,10 @@ var lursa = function lursa(schema) {
   };
 };
 
+function isFunction(w) {
+  return w && {}.toString.call(w) === "[object Function]";
+}
+
 function no(value) {
   return typeof value === "undefined";
 }
@@ -265,7 +269,7 @@ function _archive(settings, schema) {
   var processed = process(schema);
   settings = convert(settings, processed);
   if (no(settings) || settings === null) settings = {};
-  var archived = archiveItems(schema, settings, processed, 0, bigInt());
+  var archived = archiveItems(schema, settings, 0, bigInt());
   var number = archived.number;
   var string = "";
 
@@ -279,7 +283,7 @@ function _archive(settings, schema) {
   return string;
 }
 
-function archiveItems(item, converted, processed, current, number) {
+function archiveItems(item, converted, current, number) {
   var choices = [];
 
   if (Array.isArray(item)) {
@@ -292,6 +296,7 @@ function archiveItems(item, converted, processed, current, number) {
     var size = sizeOfItem(item);
 
     if (size) {
+      value = isFunction(item.archive) ? item.archive.call(item, value) : value;
       var length = Math.pow(2, size) - 1;
 
       if (type === "bool") {
@@ -342,7 +347,7 @@ function archiveItems(item, converted, processed, current, number) {
   }
 
   choices.forEach(function (item) {
-    var archived = archiveItems(item, converted, processed, current, number);
+    var archived = archiveItems(item, converted, current, number);
     number = archived.number;
     current = archived.current;
   });
@@ -365,13 +370,13 @@ function _unarchive(string, schema) {
   }
 
   var ugly = {};
-  unarchiveItems(processed, schema, ugly, 0, length ? number : undefined); // last argument optional for special handling of zero length string
+  unarchiveItems(schema, ugly, 0, length ? number : undefined); // last argument optional for special handling of zero length string
 
   var pretty = unconvert(ugly, processed);
   return pretty;
 }
 
-function unarchiveItems(processed, item, result, current, number) {
+function unarchiveItems(item, result, current, number) {
   // last argument optional for special handling of zero length string
   var children = [];
   if (Array.isArray(item)) children = item;else if (item.type === "group") children = choicesForItem(item);else {
@@ -382,7 +387,6 @@ function unarchiveItems(processed, item, result, current, number) {
       current += size;
 
       if (item.type === "chooser") {
-        result[item.id] = value;
         var choices = choicesForItem(item);
 
         if (value >= 0 && value < choices.length) {
@@ -390,13 +394,13 @@ function unarchiveItems(processed, item, result, current, number) {
 
           children.push(child); // othe items are hidden
         }
-      } else {
-        result[item.id] = value;
       }
+
+      result[item.id] = isFunction(item.unarchive) ? item.unarchive.call(item, value) : value;
     }
   }
   children.forEach(function (child) {
-    current = unarchiveItems(processed, child, result, current, number);
+    current = unarchiveItems(child, result, current, number);
   });
   return current;
 }
