@@ -163,7 +163,7 @@ function toPrettyValue(value,item) {
 	const min = item.min;
 	const max = item.max;
 	const size = item.size;
-	if (type === "bool") return value ? true : false;
+	if (type === "bool") return (value % 2) ? true : false;
 	else if (type === "int") {
 		if (no(size)) return 0;
 		const length = Math.pow(2,size) - 1;

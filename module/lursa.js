@@ -201,7 +201,7 @@ function toPrettyValue(value, item) {
   var min = item.min;
   var max = item.max;
   var size = item.size;
-  if (type === "bool") return value ? true : false;else if (type === "int") {
+  if (type === "bool") return value % 2 ? true : false;else if (type === "int") {
     if (no(size)) return 0;
     var length = Math.pow(2, size) - 1;
 
