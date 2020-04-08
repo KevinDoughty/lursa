@@ -213,7 +213,6 @@ describe("LURSA", function() {
 						{ id:"e", type:"bool", default:false },
 						{ id:"f", type:"bool", default:true }
 					] }
-
 				] },
 				{ id:"g", type:"bool", default:true },
 				{ id:"h", type:"bool", default:true },

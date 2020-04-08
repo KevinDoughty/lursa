@@ -241,33 +241,21 @@ function toPrettyValue(value, item) {
   return value;
 }
 
-function convert(settings, processed) {
-  var result = {};
-  Object.keys(processed).forEach(function (key) {
-    var value = settings[key];
-    var item = processed[key];
-    if (no(value)) value = specifiedPrettyValue(item);
-    value = toUglyValue(value, item);
-    result[key] = value;
-  });
-  return result;
+function convert(value, item) {
+  if (no(value)) value = specifiedPrettyValue(item);
+  if (isFunction(item.archive)) value = item.archive.call(item, value);
+  value = toUglyValue(value, item);
+  return value;
 }
 
-function unconvert(settings, processed) {
-  var result = {};
-  Object.keys(settings).forEach(function (key) {
-    var value = settings[key];
-    var item = processed[key];
-    value = toPrettyValue(value, item);
-    result[key] = value;
-  });
-  return result;
+function unconvert(value, item) {
+  value = toPrettyValue(value, item);
+  if (isFunction(item.unarchive)) value = item.unarchive.call(item, value);
+  return value;
 }
 
 function _archive(settings, schema) {
   if (no(schema)) throw new Error("no schema to use for archiving");
-  var processed = process(schema);
-  settings = convert(settings, processed);
   if (no(settings) || settings === null) settings = {};
   var archived = archiveItem(schema, settings, 0, bigInt());
   var number = archived.number;
@@ -292,50 +280,17 @@ function archiveItem(item, converted, current, number) {
     var type = item.type;
     var value = converted[item.id];
     if (type === "group") choices = choicesForItem(item);
-    if (type === "chooser") choices = [choicesForItem(item)[value]];
+
+    if (type === "chooser") {
+      if (no(value)) value = specifiedPrettyValue(item); // converted can be {}, giving no value.
+
+      choices = [choicesForItem(item)[value]];
+    }
+
     var size = sizeOfItem(item);
 
     if (size) {
-      value = isFunction(item.archive) ? item.archive.call(item, value) : value;
-      var length = Math.pow(2, size) - 1;
-
-      if (type === "bool") {
-        while (value < 0) {
-          value += 2;
-        }
-
-        while (value > 1) {
-          value -= 2;
-        }
-      } else if (item.type === "int") {
-        if (item.wrap) {
-          while (value < 0) {
-            value += length;
-          }
-
-          while (value >= length) {
-            value -= length;
-          } // if wrap, max is exclusive!
-
-        } else {
-          if (value < 0) value = 0;
-          if (value > length) value = length; // if not wrap, max is inclusive!
-        }
-      } else if (type === "float") {
-        if (item.wrap) {
-          while (value < 0) {
-            value += length;
-          }
-
-          while (value >= length) {
-            value -= length;
-          } // if wrap, max is exclusive!
-
-        } else {
-          if (value < 0) value = 0;
-          if (value > length) value = length; // if not wrap, max is inclusive!
-        }
-      }
+      value = convert(value, item);
 
       var _int2 = bigInt(value);
 
@@ -385,6 +340,7 @@ function unarchiveItem(item, result, current, number) {
     if (size) {
       var value = no(number) ? specifiedUglyValue(item) : bigInt(number).shiftRight(current).and(Math.pow(2, size) - 1).toJSNumber();
       current += size;
+      value = unconvert(value, item);
 
       if (item.type === "chooser") {
         var choices = choicesForItem(item);
@@ -396,7 +352,7 @@ function unarchiveItem(item, result, current, number) {
         }
       }
 
-      result[item.id] = isFunction(item.unarchive) ? item.unarchive.call(item, value) : value;
+      result[item.id] = value;
     }
   }
   children.forEach(function (child) {
