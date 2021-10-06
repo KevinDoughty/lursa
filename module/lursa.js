@@ -139,8 +139,7 @@ function toUglyValue(value, item) {
   // sanitizes via wrap and clamp
   if (no(value)) return 0;
   var type = item.type;
-  if (type === "bool") return value ? 1 : 0;
-  else if (type === "enum" || type === "chooser") return specifiedPrettyValue(item);
+  if (type === "bool") return value ? 1 : 0;else if (type === "enum" || type === "chooser") return specifiedPrettyValue(item); // pretty needed, don't want to become re-entrant
   else {
       var min = item.min;
       var max = item.max;
@@ -151,8 +150,7 @@ function toUglyValue(value, item) {
         var length = Math.pow(2, size) - 1;
         var start = min;
         var end = max;
-        if (yes(min) && yes(max)) length = max - min;else if (yes(min)) end = min + length;else if (yes(max)) start = max - length;
-        else {
+        if (yes(min) && yes(max)) length = max - min;else if (yes(min)) end = min + length;else if (yes(max)) start = max - length;else {
           start = 0;
           end = length;
         }
