@@ -6,7 +6,10 @@ const base = alphabet.length; // 57
 const lursa = function(schema) {
 	return {
 		archive: settings => archive(settings,schema),
-		unarchive: settings => unarchive(settings,schema)
+		unarchive: settings => unarchive(settings,schema),
+		increment: (key, value, amount) => increment(key, value, amount, schema),
+		decrement: (key, value, amount) => decrement(key, value, amount, schema)
+
 	};
 };
 export default lursa;
@@ -299,4 +302,19 @@ function unarchiveItem(item, result, current, number) {  // last argument option
 		current = unarchiveItem(child, result, current, number);
 	});
 	return current;
+}
+
+function increment(key, value, amount, schema) {
+	if (no(schema)) throw new Error("no schema for increment");
+	if (typeof amount === "undefined" || amount === null) amount = 1;
+	const processed = process(schema);
+	const item = processed[key];
+	const ugly = convert(value, item);
+	const pretty = unconvert(ugly+amount, item);
+	return pretty;
+}
+function decrement(key, value, amount, schema) {
+	if (no(schema)) throw new Error("no schema for decrement");
+	if (typeof amount === "undefined" || amount === null) amount = 1;
+	return increment(key, value, amount*-1, schema);
 }

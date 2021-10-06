@@ -11,6 +11,12 @@ var lursa = function lursa(schema) {
     },
     unarchive: function unarchive(settings) {
       return _unarchive(settings, schema);
+    },
+    increment: function increment(key, value, amount) {
+      return _increment(key, value, amount, schema);
+    },
+    decrement: function decrement(key, value, amount) {
+      return _decrement(key, value, amount, schema);
     }
   };
 };
@@ -133,7 +139,8 @@ function toUglyValue(value, item) {
   // sanitizes via wrap and clamp
   if (no(value)) return 0;
   var type = item.type;
-  if (type === "bool") return value ? 1 : 0;else if (type === "enum" || type === "chooser") return specifiedPrettyValue(item); // pretty needed, don't want to become re-entrant
+  if (type === "bool") return value ? 1 : 0;
+  else if (type === "enum" || type === "chooser") return specifiedPrettyValue(item);
   else {
       var min = item.min;
       var max = item.max;
@@ -144,7 +151,8 @@ function toUglyValue(value, item) {
         var length = Math.pow(2, size) - 1;
         var start = min;
         var end = max;
-        if (yes(min) && yes(max)) length = max - min;else if (yes(min)) end = min + length;else if (yes(max)) start = max - length;else {
+        if (yes(min) && yes(max)) length = max - min;else if (yes(min)) end = min + length;else if (yes(max)) start = max - length;
+        else {
           start = 0;
           end = length;
         }
@@ -359,6 +367,22 @@ function unarchiveItem(item, result, current, number) {
     current = unarchiveItem(child, result, current, number);
   });
   return current;
+}
+
+function _increment(key, value, amount, schema) {
+  if (no(schema)) throw new Error("no schema for increment");
+  if (typeof amount === "undefined" || amount === null) amount = 1;
+  var processed = process(schema);
+  var item = processed[key];
+  var ugly = convert(value, item);
+  var pretty = unconvert(ugly + amount, item);
+  return pretty;
+}
+
+function _decrement(key, value, amount, schema) {
+  if (no(schema)) throw new Error("no schema for decrement");
+  if (typeof amount === "undefined" || amount === null) amount = 1;
+  return _increment(key, value, amount * -1, schema);
 }
 
 export default lursa;
